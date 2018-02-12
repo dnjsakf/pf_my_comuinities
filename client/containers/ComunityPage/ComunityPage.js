@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { ContentList } from './../../Components'
-import { Row, Col, Icon } from 'react-materialize'
-import './communityPage.css'
+import { Row, Col, Icon, Input } from 'react-materialize'
+import './ComunityPage.css'
 
 class ComunityPage extends React.Component { 
     constructor(props){
@@ -31,28 +31,21 @@ class ComunityPage extends React.Component {
         }
     }
     componentDidMount(){
-        $('select#serach_condition').material_select();
+        $('select').material_select();
     }
     render(){
         const contents = this.props.setting.contentType.map((type, index)=>{
             return (
-                <div className={ `content ${type}` }>
-                    <div>{ type }</div>
-                    <Row>
-                        <Col className="input-field" s={3}>
-                            <select id="serach_condition" name="condition">
-                                <option value="title" selected>제목</option>
-                                <option value="writer">작성자</option>
-                            </select>
-                        </Col>
-                        <Col className="input-field" s={7}>
-                            <input id="search_input" type="text" name="input" />
-                            <label for="search_input"/>
-                        </Col>
-                        <Col className="input-field" s={2}>
-                            <Icon>search</Icon>
-                        </Col>
-                    </Row>
+                <div className={ `content ${type} t2` }>
+                    <h6>{ type }</h6>
+                    <div className="row">
+                        <select className="input-field col s2" type="select" name="condition">
+                            <option value="title" selected>제목</option>
+                            <option value="writer">작성자</option>
+                        </select>
+                        <input className="input-field col s9"type="text" name="input"/>
+                        <a className="input-field col s1"><i className="material-icons small">search</i></a>
+                    </div>
                     <ContentList type={type} updated={this.state.updated[type]}/>
                 </div>
             )

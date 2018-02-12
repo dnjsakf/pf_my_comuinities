@@ -1,0 +1,12 @@
+.content {
+    float: left;
+    border: 1px solid;
+    height: 100%;
+    padding: 5px;
+}
+
+.content.t1 { width: 100; }
+.content.t2 { width: 50%; }
+.content.t3 { width: 33.3%; }
+
+.content .select-wrapper { padding: 0 !important; margin: 0 !important;}

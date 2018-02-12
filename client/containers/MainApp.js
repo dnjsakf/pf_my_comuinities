@@ -23,7 +23,7 @@ class MainApp extends React.Component {
                     board: {
                         '자유게시판':'/community/all_article'
                     },
-                    contentType: ['text', 'photo', 'video'],
+                    contentType: ['text', 'photo'],
                     interval: 1
                 }
             ]
