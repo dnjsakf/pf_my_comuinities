@@ -14,7 +14,7 @@ import App from './containers/MainApp.js'
 import './style.css';
 
 const store = createStore( reducers, applyMiddleware(thunk) );
-const render = Component => {
+const render = (Component)=>{
   ReactDOM.render(
     <AppContainer>
       <Provider store={ store }>

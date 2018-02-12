@@ -1,12 +1,17 @@
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
+import mysql from 'mysql'
 
 import dbConfig from './config/database.js'
 import sessionConfig from './config/session.js'
 import webpackDev from './config/webpack.dev.js'
 
 const app = express();
+
+// Database
+const conn = mysql.createConnection(dbConfig);
+conn.connect();
 
 // App Configuration
 app.set('port', {"local":8080, 'dev':4000});
