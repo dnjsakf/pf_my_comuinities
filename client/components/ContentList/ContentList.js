@@ -1,4 +1,5 @@
 import React from 'react'
+import './ContentList.css'
 
 /**
  * @param type Array: ['photo', 'video', 'text']
@@ -23,7 +24,7 @@ const Content = ({ type, updated })=>{
         return <ContentItem key={index} type={type} data={data} />
     });
     return (
-        <ul className={`content-list ${type}`} >
+        <ul className={`content-list ${type}`}>
             { items.length > 0 ? items : null }
         </ul>
     )

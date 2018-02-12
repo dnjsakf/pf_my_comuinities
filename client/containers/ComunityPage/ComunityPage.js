@@ -1,6 +1,8 @@
 import React from 'react'
 
-import { Content } from './../../Components'
+import { ContentList } from './../../Components'
+import { Row, Col, Icon } from 'react-materialize'
+import './communityPage.css'
 
 class ComunityPage extends React.Component { 
     constructor(props){
@@ -28,14 +30,40 @@ class ComunityPage extends React.Component {
             video:[]
         }
     }
+    componentDidMount(){
+        $('select#serach_condition').material_select();
+    }
     render(){
+        const contents = this.props.setting.contentType.map((type, index)=>{
+            return (
+                <div className={ `content ${type}` }>
+                    <div>{ type }</div>
+                    <Row>
+                        <Col className="input-field" s={3}>
+                            <select id="serach_condition" name="condition">
+                                <option value="title" selected>제목</option>
+                                <option value="writer">작성자</option>
+                            </select>
+                        </Col>
+                        <Col className="input-field" s={7}>
+                            <input id="search_input" type="text" name="input" />
+                            <label for="search_input"/>
+                        </Col>
+                        <Col className="input-field" s={2}>
+                            <Icon>search</Icon>
+                        </Col>
+                    </Row>
+                    <ContentList type={type} updated={this.state.updated[type]}/>
+                </div>
+            )
+        });
+
         return (
             <div className={ `page ${this.props.setting.title}` }>
-                {
-                    this.props.setting.contentType.map((type, index)=>{
-                        return <Content type={type} updated={this.state.updated[type]}/>
-                    })
-                }
+                <div>
+                    <h5>{this.props.setting.title}</h5>
+                </div>
+                { contents }
             </div>
         );
     }

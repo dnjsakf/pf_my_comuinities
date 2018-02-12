@@ -1,1 +1,1 @@
-export { default as Content } from './Content/Content.js'
+export { default as ContentList } from './ContentList/ContentList.js'
