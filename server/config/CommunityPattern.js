@@ -1,23 +1,23 @@
 const moment = require('moment');
 
 module.exports = function( state ){
-    this.state = state;
-
-    this.getBoardNames = ()=>{return Object.keys( this.state.board )};
-    this.getBoardURL = (boardName)=>{
-        return (this.state.host+this.state.board[boardName]+this.state.pageQuery);
+    this.state = {
+        host: state.host,
+        title: state.title,
+        update: state.board.update,
+        today: state.today
     }
-    this.getBoardList = service[state.name].getBoardList;
-    this.getContent = service[state.name].getContent.bind(this);
+    this.getBoardList = service[state.title].getBoardList;
+    this.getContent = service[state.title].getContent.bind(this);
 }
 const service = {
     'YGOSU': {
-        getBoardList: ($)=>{ return $('table.bd_list tbody > tr:not(.notice)') },
+        getBoardList: ( $ )=>{ return $('table.bd_list tbody > tr:not(.notice)') },
         getContent: function( $content ){
-            let regDate = "2018-02-13 " + $content.children('.date').text();
-            if( $content.children('#new').length > 0
-                && new Date(regDate).getTime() > this.state.lastUpdate ){
+            const cntDate = $content.children('.date').text();
+            const regDate = `${this.state.today} ${cntDate}`;
 
+            if( new Date(regDate).getTime() >= this.state.update ){
                 let cnt = {}
                 cnt.no = $content.children('.no').text();
                 cnt.title = $content.children('.tit').text();
@@ -32,9 +32,10 @@ const service = {
     'GEZIP': {
         getBoardList: ($)=>{ return $('#list-body .list-item:not(.bg-light)') },
         getContent: function($content){
-            let regDate = "2018-02-13 " + $content.children('.wr-date').text().replace(/(\t|\n)/g, '');
+            const cntDate = $content.children('.wr-date').text().replace(/(\t|\n)/g, '');
+            const regDate = `${this.state.today} ${cntDate}`;
             
-            if( new Date(regDate).getTime() >= this.state.lastUpdate ){
+            if( new Date(regDate).getTime() >= this.state.update ){
                 let cnt = {}
                 cnt.no = $content.children('.wr-num').text();
                 cnt.title = $content.find('.wr-subject > a.item-subject').text().replace(/(\t\d?|\n\d?)/g, '');
@@ -49,9 +50,9 @@ const service = {
     'HUMORUNIV': {
         getBoardList: ($)=>{return $('#cnts_list_new table').eq(1).find('tr')},
         getContent: function($content){
-            let regDate = $content.children('.li_date').text();
+            const regDate = $content.children('.li_date').text();
 
-            if( new Date(regDate).getTime() >= this.state.lastUpdate ){
+            if( new Date(regDate).getTime() >= this.state.update ){
                 let cnt = {}
                 cnt.no = $content.attr('id').replace('li_chk_pds-','');
                 cnt.title = $content.children('.li_sbj').text();
