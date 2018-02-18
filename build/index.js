@@ -12,6 +12,10 @@ var _bodyParser = require('body-parser');
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _mysql = require('mysql');
+
+var _mysql2 = _interopRequireDefault(_mysql);
+
 var _database = require('./config/database.js');
 
 var _database2 = _interopRequireDefault(_database);
@@ -24,9 +28,17 @@ var _webpackDev = require('./config/webpack.dev.js');
 
 var _webpackDev2 = _interopRequireDefault(_webpackDev);
 
+var _crawler = require('./routes/crawler.js');
+
+var _crawler2 = _interopRequireDefault(_crawler);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = (0, _express2.default)();
+
+// Database
+var conn = _mysql2.default.createConnection(_database2.default);
+conn.connect();
 
 // App Configuration
 app.set('port', { "local": 8080, 'dev': 4000 });
@@ -48,8 +60,9 @@ app.use(function (error, req, res, next) {
 // Session
 app.use(_session2.default);
 
-// Router Controll
+// Set Route
 app.use('/', _express2.default.static(_path2.default.join(__dirname, './../public')));
+app.use('/api', [_crawler2.default]);
 app.get('*', function (req, res, next) {
   if (req.path.split('/')[1] === 'static') return next();
   res.sendFile(_path2.default.resolve(__dirname, '../public/index.html'));
@@ -72,6 +85,8 @@ var _temp = function () {
   }
 
   __REACT_HOT_LOADER__.register(app, 'app', 'server/index.js');
+
+  __REACT_HOT_LOADER__.register(conn, 'conn', 'server/index.js');
 }();
 
 ;

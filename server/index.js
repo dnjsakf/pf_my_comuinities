@@ -7,6 +7,8 @@ import dbConfig from './config/database.js'
 import sessionConfig from './config/session.js'
 import webpackDev from './config/webpack.dev.js'
 
+import apiCrawler from './routes/crawler.js'
+
 const app = express();
 
 // Database
@@ -35,6 +37,8 @@ app.use(sessionConfig);
 
 // Set Route
 app.use('/', express.static(path.join(__dirname, './../public')));
+app.use('/api', [ apiCrawler ] );
+
 app.get('*', (req, res, next)=>{
   if( req.path.split('/')[1] === 'static') return next();
   res.sendFile(path.resolve(__dirname, '../public/index.html'));
