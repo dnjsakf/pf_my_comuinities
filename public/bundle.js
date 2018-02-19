@@ -844,7 +844,7 @@
     /******/
     /******/
     /******/
-    var hotCurrentChildModule, hotDeferred, hotUpdate, hotUpdateNewHash, hotApplyOnUpdate = !0, hotCurrentHash = "248669d587dab9ed2a49", hotRequestTimeout = 1e4, hotCurrentModuleData = {}, hotCurrentParents = [], hotCurrentParentsTemp = [], hotStatusHandlers = [], hotStatus = "idle", hotWaitingFiles = 0, hotChunksLoading = 0, hotWaitingFilesMap = {}, hotRequestedFilesMap = {}, hotAvailableFilesMap = {}, installedModules = {};
+    var hotCurrentChildModule, hotDeferred, hotUpdate, hotUpdateNewHash, hotApplyOnUpdate = !0, hotCurrentHash = "afd814ae1f7732971bdd", hotRequestTimeout = 1e4, hotCurrentModuleData = {}, hotCurrentParents = [], hotCurrentParentsTemp = [], hotStatusHandlers = [], hotStatus = "idle", hotWaitingFiles = 0, hotChunksLoading = 0, hotWaitingFilesMap = {}, hotRequestedFilesMap = {}, hotAvailableFilesMap = {}, installedModules = {};
     /******/
     /******/
     // Load entry module and return exports
@@ -908,8 +908,93 @@
     }, hotCreateRequire(0)(__webpack_require__.s = 0);
 }({
     /***/
+    "./client/Components/ContentList/ContentList.css": /***/
+    function(module, exports, __webpack_require__) {
+        var content = __webpack_require__("./node_modules/css-loader/index.js!./client/Components/ContentList/ContentList.css");
+        "string" == typeof content && (content = [ [ module.i, content, "" ] ]);
+        var options = {
+            hmr: !0
+        };
+        options.transform = void 0, options.insertInto = void 0;
+        var update = __webpack_require__("./node_modules/style-loader/lib/addStyles.js")(content, options);
+        content.locals && (module.exports = content.locals), module.hot.accept("./node_modules/css-loader/index.js!./client/Components/ContentList/ContentList.css", function() {
+            var newContent = __webpack_require__("./node_modules/css-loader/index.js!./client/Components/ContentList/ContentList.css");
+            if ("string" == typeof newContent && (newContent = [ [ module.i, newContent, "" ] ]), 
+            !function(a, b) {
+                var key, idx = 0;
+                for (key in a) {
+                    if (!b || a[key] !== b[key]) return !1;
+                    idx++;
+                }
+                for (key in b) idx--;
+                return 0 === idx;
+            }(content.locals, newContent.locals)) throw new Error("Aborting CSS HMR due to changed css-modules locals.");
+            update(newContent);
+        }), module.hot.dispose(function() {
+            update();
+        });
+    },
+    /***/
+    "./client/Components/ContentList/ContentList.js": /***/
+    function(module, __webpack_exports__, __webpack_require__) {
+        "use strict";
+        /* harmony import */
+        var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__("./node_modules/react/react.js"), __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__), __WEBPACK_IMPORTED_MODULE_1__ContentList_css__ = __webpack_require__("./client/Components/ContentList/ContentList.css"), ContentItem = (__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__ContentList_css__), 
+        function(_ref) {
+            var data = _ref.data;
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("li", {
+                className: "content-item " + data.no + " collection-item avatar"
+            }, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("a", {
+                style: {
+                    display: "block"
+                },
+                href: data.url
+            }, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("img", {
+                src: "/images/ygosu_logo.gif",
+                alt: "",
+                className: "circle"
+            }), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("span", {
+                className: "title"
+            }, data.title), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("p", null, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("a", {
+                className: "writer"
+            }, data.writer), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("br", null), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("a", {
+                className: "regDate"
+            }, data.regDate))), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("a", {
+                className: "secondary-content"
+            }, "GO"));
+        }), ContentList = function(_ref2) {
+            var contents = _ref2.contents, items = contents.map(function(data, index) {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(ContentItem, {
+                    key: index,
+                    data: data
+                });
+            });
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("ul", {
+                className: "content-list collection"
+            }, items.length > 0 ? items : null);
+        };
+        ContentList.defaultProps = {
+            contents: []
+        };
+        var _default = ContentList;
+        /* harmony default export */
+        __webpack_exports__.a = _default;
+        !function() {
+            "undefined" != typeof __REACT_HOT_LOADER__ && (__REACT_HOT_LOADER__.register(ContentItem, "ContentItem", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/Components/ContentList/ContentList.js"), 
+            __REACT_HOT_LOADER__.register(ContentList, "ContentList", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/Components/ContentList/ContentList.js"), 
+            __REACT_HOT_LOADER__.register(_default, "default", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/Components/ContentList/ContentList.js"));
+        }();
+    },
+    /***/
     "./client/Components/index.js": /***/
-    function(module, exports) {
+    function(module, __webpack_exports__, __webpack_require__) {
+        "use strict";
+        /* harmony import */
+        var __WEBPACK_IMPORTED_MODULE_0__ContentList_ContentList_js__ = __webpack_require__("./client/Components/ContentList/ContentList.js");
+        /* harmony reexport (binding) */
+        __webpack_require__.d(__webpack_exports__, "a", function() {
+            return __WEBPACK_IMPORTED_MODULE_0__ContentList_ContentList_js__.a;
+        });
     },
     /***/
     "./client/actions/ActionTypes.js": /***/
@@ -935,12 +1020,10 @@
         function getContent(params) {
             return function(dispatch) {
                 dispatch(ready());
-                var request = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get("/api/crawler", {
-                    params: params
-                });
+                var request = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.get("/api/crawler/" + params.commu + "/" + params.board);
                 request.then(function(response) {
-                    dispatch(success(response.data));
-                }), request.then(function(error) {
+                    console.log(response), dispatch(success(response.data));
+                }), request.catch(function(error) {
                     dispatch(failure(error.response.data));
                 });
             };
@@ -1025,10 +1108,9 @@
             }), superClass && (Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass);
         }
         /* harmony import */
-        var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__("./node_modules/react/react.js"), __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__), __WEBPACK_IMPORTED_MODULE_1_react_redux__ = __webpack_require__("./node_modules/react-redux/es/index.js"), __WEBPACK_IMPORTED_MODULE_2__Components__ = __webpack_require__("./client/Components/index.js"), __WEBPACK_IMPORTED_MODULE_3_react_materialize__ = (__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Components__), 
-        __webpack_require__("./node_modules/react-materialize/lib/index.js")), __WEBPACK_IMPORTED_MODULE_4__ComunityPage_css__ = (__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_react_materialize__), 
-        __webpack_require__("./client/containers/ComunityPage/ComunityPage.css")), __WEBPACK_IMPORTED_MODULE_5__actions_content_act_js__ = (__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__ComunityPage_css__), 
-        __webpack_require__("./client/actions/content.act.js")), _createClass = function() {
+        var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__("./node_modules/react/react.js"), __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__), __WEBPACK_IMPORTED_MODULE_1_react_redux__ = __webpack_require__("./node_modules/react-redux/es/index.js"), __WEBPACK_IMPORTED_MODULE_2__actions_content_act_js__ = __webpack_require__("./client/actions/content.act.js"), __WEBPACK_IMPORTED_MODULE_3__Components__ = __webpack_require__("./client/Components/index.js"), __WEBPACK_IMPORTED_MODULE_4_react_materialize__ = __webpack_require__("./node_modules/react-materialize/lib/index.js"), __WEBPACK_IMPORTED_MODULE_5__ComunityPage_css__ = (__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_react_materialize__), 
+        __webpack_require__("./client/containers/ComunityPage/ComunityPage.css")), _createClass = (__webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__ComunityPage_css__), 
+        function() {
             function defineProperties(target, props) {
                 for (var i = 0; i < props.length; i++) {
                     var descriptor = props[i];
@@ -1040,35 +1122,62 @@
                 return protoProps && defineProperties(Constructor.prototype, protoProps), staticProps && defineProperties(Constructor, staticProps), 
                 Constructor;
             };
-        }(), ComunityPage = function(_React$Component) {
+        }()), defaultProps = {
+            location: "ComunityPage",
+            board: {
+                info: {
+                    pagTitle: "",
+                    comTitle: "",
+                    bodTitle: ""
+                },
+                contents: []
+            },
+            setting: {
+                params: {
+                    commu: "ygosu",
+                    // 시작페이지 가져오기
+                    board: "yeobgi"
+                },
+                interval: 5e3
+            }
+        }, ComunityPage = function(_React$Component) {
             function ComunityPage(props) {
                 _classCallCheck(this, ComunityPage);
                 var _this = _possibleConstructorReturn(this, (ComunityPage.__proto__ || Object.getPrototypeOf(ComunityPage)).call(this, props));
                 return _this.state = {
-                    board: {
-                        contents: []
-                    }
+                    board: props.board,
+                    setting: props.setting
                 }, _this.getContentHandler = _this.getContentHandler.bind(_this), _this;
             }
             return _inherits(ComunityPage, _React$Component), _createClass(ComunityPage, [ {
                 key: "componentDidMount",
                 value: function() {
-                    $("select").material_select(), this.getContentHandler();
+                    $("select").material_select(), // 여기서 세션 체크하고, Props 받아올 때 getContent 실행
+                    this.getContentHandler(this.state.setting);
                 }
             }, {
                 key: "getContentHandler",
-                value: function() {
-                    var params = {
-                        memCode: "mem@adm#1",
-                        comCode: "ygosu",
-                        bodCode: "yeobgi"
-                    };
-                    this.props.doGetContent(params);
+                value: function(setting) {
+                    var that = this;
+                    setTimeout(function() {
+                        that.props.doGetContent(setting.params);
+                    }, setting.interval);
+                }
+            }, {
+                key: "componentWillReceiveProps",
+                value: function(nextProps) {
+                    console.log(nextProps), "READY" !== nextProps.board.status && (this.setState(Object.assign({}, this.state, {
+                        board: {
+                            doUpdate: nextProps.board.doUpdate,
+                            info: nextProps.board.info,
+                            contents: nextProps.board.contents.concat(this.state.board.contents)
+                        }
+                    })), this.getContentHandler(this.state.setting));
                 }
             }, {
                 key: "componentWillUpdate",
                 value: function(nextProps, nextState) {
-                    return console.log(nextProps), "READY" !== nextProps.board.status;
+                    return nextProps.board.status, !0;
                 }
             }, {
                 key: "render",
@@ -1097,16 +1206,14 @@
                         className: "material-icons small"
                     }, "search"))));
                     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", {
-                        className: "page " + this.props.board.info.pagTitle
-                    }, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", null, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("h5", null, this.props.board.info.comTitle)), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Components__.ContentList, {
-                        contents: this.props.board.contents
-                    }));
+                        className: "page " + this.state.board.info.pagTitle
+                    }, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", null, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("h5", null, this.state.board.info.comTitle)), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", null, this.state.board.info.bodTitle, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__Components__.a, {
+                        contents: this.state.board.contents
+                    })));
                 }
             } ]), ComunityPage;
         }(__WEBPACK_IMPORTED_MODULE_0_react___default.a.Component);
-        ComunityPage.defaultProps = {
-            location: "ComunityPage"
-        };
+        ComunityPage.defaultProps = defaultProps;
         var mapStateToProps = function(state) {
             return {
                 board: state.ContentReducer
@@ -1114,14 +1221,15 @@
         }, mapDispatchToProps = function(dispatch) {
             return {
                 doGetContent: function(params) {
-                    dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__actions_content_act_js__.a)(params));
+                    dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__actions_content_act_js__.a)(params));
                 }
             };
         }, _default = Object(__WEBPACK_IMPORTED_MODULE_1_react_redux__.b)(mapStateToProps, mapDispatchToProps)(ComunityPage);
         /* harmony default export */
         __webpack_exports__.a = _default;
         !function() {
-            "undefined" != typeof __REACT_HOT_LOADER__ && (__REACT_HOT_LOADER__.register(ComunityPage, "ComunityPage", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/containers/ComunityPage/ComunityPage.js"), 
+            "undefined" != typeof __REACT_HOT_LOADER__ && (__REACT_HOT_LOADER__.register(defaultProps, "defaultProps", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/containers/ComunityPage/ComunityPage.js"), 
+            __REACT_HOT_LOADER__.register(ComunityPage, "ComunityPage", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/containers/ComunityPage/ComunityPage.js"), 
             __REACT_HOT_LOADER__.register(mapStateToProps, "mapStateToProps", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/containers/ComunityPage/ComunityPage.js"), 
             __REACT_HOT_LOADER__.register(mapDispatchToProps, "mapDispatchToProps", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/containers/ComunityPage/ComunityPage.js"), 
             __REACT_HOT_LOADER__.register(_default, "default", "C:/Users/dnjsa/Desktop/NODE/portfolio/MyComunities/client/containers/ComunityPage/ComunityPage.js"));
@@ -1182,7 +1290,7 @@
                 key: "render",
                 value: function() {
                     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("div", null, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("header", null, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("a", null, this.state.session.username)), __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("section", null, __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__ComunityPage_ComunityPage_js__.a, {
-                        memCode: this.state.session.memCode
+                        session: this.state.session
                     })));
                 }
             } ]), MainApp;
@@ -1231,6 +1339,7 @@
         /* harmony import */
         var __WEBPACK_IMPORTED_MODULE_0__actions_ActionTypes_js__ = __webpack_require__("./client/actions/ActionTypes.js"), initialize = {
             status: "INIT",
+            doUpdate: !1,
             info: {},
             contents: []
         }, _default = function() {
@@ -1239,6 +1348,7 @@
               case __WEBPACK_IMPORTED_MODULE_0__actions_ActionTypes_js__.a.READY:
                 return Object.assign({}, state, {
                     status: "READY",
+                    doUpdate: initialize.doUpdate,
                     info: initialize.info,
                     contents: initialize.contents
                 });
@@ -1246,8 +1356,9 @@
               case __WEBPACK_IMPORTED_MODULE_0__actions_ActionTypes_js__.a.SUCCESS:
                 return Object.assign({}, state, {
                     status: "SUCCESS",
-                    info: action.board,
-                    contents: action.contents
+                    doUpdate: action.data.contents.length > 0,
+                    info: action.data.board,
+                    contents: action.data.contents
                 });
 
               case __WEBPACK_IMPORTED_MODULE_0__actions_ActionTypes_js__.a.FAILURE:
@@ -8053,6 +8164,14 @@
  */
         var _assign = __webpack_require__("./node_modules/object-assign/index.js"), emptyObject = __webpack_require__("./node_modules/fbjs/lib/emptyObject.js"), _invariant = __webpack_require__("./node_modules/fbjs/lib/invariant.js"), MIXINS_KEY = "mixins";
         module.exports = factory;
+    },
+    /***/
+    "./node_modules/css-loader/index.js!./client/Components/ContentList/ContentList.css": /***/
+    function(module, exports, __webpack_require__) {
+        exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(!1), 
+        // imports
+        // module
+        exports.push([ module.i, ".content-item{padding-left:40px}", "" ]);
     },
     /***/
     "./node_modules/css-loader/index.js!./client/containers/ComunityPage/ComunityPage.css": /***/

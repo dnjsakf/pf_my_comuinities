@@ -7,7 +7,7 @@ var request = require('request');
 
 var moment = require('moment');
 var DATE = new Date();
-var today = DATE.getFullYear() + '-' + DATE.getMonth() + '-' + DATE.getDate();
+var today = DATE.getFullYear() + '-' + (DATE.getMonth() + 1) + '-' + DATE.getDate();
 
 // Configuration
 var UserAgent = 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/537.36';
@@ -69,14 +69,14 @@ Crawling.prototype.run = function () {
     return new Promise(function (resolve, reject) {
         that.scrapping(boardURL, that.state.startPage, function (error, pages, contents) {
             // if( error ) return callback( error );
-            if (error) reject(error);
+            if (error) reject({ errorCode: 400, error: error });
             resolve({
                 board: that.state,
                 pages: pages,
                 contents: contents,
                 updateData: contents.length > 0 ? [contents[0].no, // contentId
                 contents[0].regDate, // updated
-                board.logCode // logCode
+                that.state.logCode // logCode
                 ] : null
             });
         });
@@ -101,14 +101,12 @@ Crawling.prototype.runWithLogin = function () {
                 'Content-Type': ContentType
             }
         };
-
         request(options, function (error, response, body) {
-            if (error) reject(error);
+            if (error) reject({ errorCode: 400, error: error, msg: "User cookie login error" });
             resolve(cookieJar);
         });
     }).then(function (cookie) {
         _this.cookieJar = cookie;
-        console.log(_this.run());
         return _this.run();
     }).catch(function (error) {
         return new Promise().reject(error);

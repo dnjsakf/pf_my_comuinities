@@ -1,74 +1,120 @@
 'use strict';
 
-// import express from 'express'
-// import mysql from 'mysql'
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-// import DBConfig from './../config/database.js';
-// import { crawler as SQL } from './../config/sql.js'
-// import Crawler from './../utils/crawler.js'
+var _express = require('express');
 
-var express = require('express');
-var mysql = require('mysql');
-var DBConfig = require('./../config/database.js');
-var SQL = require('./../config/sql.js');
-var Crawler = require('./../utils/crawler.js');
+var _express2 = _interopRequireDefault(_express);
 
-var app = express();
+var _mysql = require('mysql');
 
-var conn = mysql.createConnection(DBConfig);
+var _mysql2 = _interopRequireDefault(_mysql);
+
+var _bcryptjs = require('bcryptjs');
+
+var _bcryptjs2 = _interopRequireDefault(_bcryptjs);
+
+var _database = require('./../config/database.js');
+
+var _database2 = _interopRequireDefault(_database);
+
+var _sql = require('./../config/sql.js');
+
+var _sql2 = _interopRequireDefault(_sql);
+
+var _crawler = require('./../utils/crawler.js');
+
+var _crawler2 = _interopRequireDefault(_crawler);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Router = _express2.default.Router();
+var conn = _mysql2.default.createConnection(_database2.default);
 conn.connect();
 
-var Router = express.Router();
-var MEM_CODE = "mem@adm#1";
-var COM_CODE = "com@ygo#2";
-var BOD_CODE = "bod#1!com@ygo#2";
+Router.get('/crawler/:comTitle/:bodTitle', function (req, res) {
+    if (!req.session.user) {
+        return res.status(405).json({
+            error: 'Invalid Access'
+        });
+    }
+    var runCrawler = new Promise(function (resolve, reject) {
+        var CONDITION = [req.session.user.memCode, req.params.comTitle, req.params.bodTitle];
+        conn.query(_sql2.default.crawler, CONDITION, function (select_error, exist) {
+            if (select_error) {
+                return reject({
+                    errorCode: 500,
+                    error: select_error
+                });
+            }
+            if (exist.length === 0) {
+                return reject({
+                    errorCode: 404,
+                    error: 'Not Found Data'
+                });
+            }
+            resolve(JSON.parse(JSON.stringify(exist[0])));
+        });
+    }).then(function (chunk) {
+        // Input User Cookie id/pwd
+        return new Promise(function (resolve, reject) {
+            // 유저에게 인풋으로 받던가, DB에서 가져오기
+            // reject는 그 때 작성
+            if (chunk.withLogin) {
+                chunk.user = { "mb_id": "dnjsakf", "mb_password": "wjddns1" };
+            }
 
-Router.get('/crawler/:comCode/:bodCode', function (req, res) {
-    var CONDITION = [MEM_CODE, req.params.comCode, req.params.bodCode];
-
-    conn.query(SQL.crawler, CONDITION, function (selectError, selected) {
-        if (selectError) return res.status(500).json({ error: selectError });
-        if (selected.length === 0) return res.status(404).json({ error: "Not Found" });
-
-        board = JSON.parse(JSON.stringify(selected[0]));
-
-        if (board.withLogin) {
-            board.user = { "mb_id": "dnjsakf", "mb_password": "wjddns1" };
-        }
-
-        var crawler = new Crawler(board);
-        var crawling = board.withLogin ? crawler.runWithLogin() : crawler.run();
-        crawling.then(function (result) {
-            console.log(result);
-            console.log('\n[' + result.board.bodTitle + ']', result.pages, result.contents.length, result.updateData);
-            if (result.updateData) {
-                conn.query(SQL.updateLog, result.updateData, function (updateError, updated) {
-                    if (updateError) return res.status(400).json({ error: updateError });
-                    res.status(200).json({
-                        board: board,
-                        contents: result.contents
+            resolve(chunk);
+        });
+    }).then(function (board) {
+        // Create Crawler
+        var crawler = new _crawler2.default(board);
+        return board.withLogin ? crawler.runWithLogin() : crawler.run();
+    }).then(function (crawled) {
+        // Crawling completed
+        return new Promise(function (resolve, reject) {
+            console.log('\n[' + crawled.board.bodTitle + ']', crawled.pages, crawled.contents.length, crawled.updateData);
+            if (crawled.updateData) {
+                conn.query(_sql2.default.updateLog, crawled.updateData, function (error, updated) {
+                    if (error) {
+                        return reject({
+                            errorCode: 400,
+                            error: error
+                        });
+                    }
+                    resolve({
+                        setCode: crawled.board.setCode,
+                        contents: crawled.contents
                     });
                 });
             } else {
-                res.status(200).json({
-                    board: board,
-                    contents: result.contents
+                resolve({
+                    setCode: crawled.board.setCode,
+                    contents: []
                 });
             }
         });
-        crawling.catch(function (crawlingError) {
-            res.status(400).json({ error: crawlingError });
+    }).then(function (data) {
+        // Save Session
+        for (var index in req.session.page) {
+            var board = req.session.page[index];
+            if (board.setCode === data.setCode) {
+                board.contents = data.contents;
+            }
+        }
+        return res.status(200).json({
+            board: data.board,
+            contents: data.contents
         });
+    }).catch(function (error) {
+        return res.status(error.errorCode).json(error);
     });
 });
 
-app.listen(3000, function (req, res) {
-    return console.log("[crawler server`]");
-});
-app.use('/api', Router);
-
-// export default Router;
-
+var _default = Router;
+exports.default = _default;
 ;
 
 var _temp = function () {
@@ -76,17 +122,11 @@ var _temp = function () {
         return;
     }
 
-    __REACT_HOT_LOADER__.register(app, 'app', 'server/routes/crawler.js');
+    __REACT_HOT_LOADER__.register(Router, 'Router', 'server/routes/crawler.js');
 
     __REACT_HOT_LOADER__.register(conn, 'conn', 'server/routes/crawler.js');
 
-    __REACT_HOT_LOADER__.register(Router, 'Router', 'server/routes/crawler.js');
-
-    __REACT_HOT_LOADER__.register(MEM_CODE, 'MEM_CODE', 'server/routes/crawler.js');
-
-    __REACT_HOT_LOADER__.register(COM_CODE, 'COM_CODE', 'server/routes/crawler.js');
-
-    __REACT_HOT_LOADER__.register(BOD_CODE, 'BOD_CODE', 'server/routes/crawler.js');
+    __REACT_HOT_LOADER__.register(_default, 'default', 'server/routes/crawler.js');
 }();
 
 ;
