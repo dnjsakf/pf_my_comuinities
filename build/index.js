@@ -63,6 +63,7 @@ app.use(_session2.default);
 // Set Route
 app.use('/', _express2.default.static(_path2.default.join(__dirname, './../public')));
 app.use('/api', [_crawler2.default]);
+
 app.get('*', function (req, res, next) {
   if (req.path.split('/')[1] === 'static') return next();
   res.sendFile(_path2.default.resolve(__dirname, '../public/index.html'));

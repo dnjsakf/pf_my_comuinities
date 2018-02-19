@@ -8,35 +8,23 @@ class MainApp extends React.Component {
 
         this.state = {
             session: {
-                memCode: 'mem1',
-                username: 'dnjsakf',
-                nickname: '허돌프',
-                regDate: '2018. 2. 12.',
-                pageIndex: 0,
-                comunities: ['com1','com2']
-            },
-            // 나중에 Reducer로 가져올것, setCode: ['setm1c1', 'setm1c2']
-            setting:[
-                {
-                    title: 'ygosu',
-                    url: 'http://www.ygosu.com',
-                    board: {
-                        '자유게시판':'/community/all_article'
-                    },
-                    contentType: ['text', 'photo'],
-                    interval: 1
-                }
-            ]
+                isLogined: true,
+                username: "admin",
+                memCode: "mem@adm#1"
+            }
         }
     }
+    // TODO: session get/set
+
     render(){
         return (
             <div>
                 <header>
-                    <h6>Header</h6>
+                    <a>{ this.state.session.username }</a>
                 </header>
                 <section>
-                    <ComunityPage setting={ this.state.setting[0] } />
+                    {/* 여기는 뭐 페이지 몇개 보여줄지 설정해주면 됨. memCode는 reducer로 처리*/}
+                    <ComunityPage session={ this.state.session } />
                 </section>
             </div>
         );

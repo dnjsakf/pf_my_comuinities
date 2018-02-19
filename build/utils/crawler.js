@@ -1,8 +1,5 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 var Parsing = require('./parsing.js');
 
 var cheerio = require('cheerio');
@@ -26,22 +23,66 @@ var Crawling = function Crawling(board) {
 Crawling.prototype.getBoardURL = function () {
     return this.state.host + this.state.uri + this.state.pageQuery;
 };
-Crawling.prototype.run = function (callback) {
-    var state = this.state;
+Crawling.prototype.scrapping = function (boardURL, page, callback) {
+    var options = {
+        url: boardURL + page,
+        jar: this.cookieJar,
+        headers: {
+            'User-Agent': UserAgent,
+            'Content-Type': ContentType
+        }
+    };
+    var req = request(options, function (error, response, body) {
+        if (error) callback(error);
+        if (response.statusCode === 200 || response.statusCode === 201) {
+            var $ = cheerio.load(body);
+            var $boardList = this.getBoardList($);
+
+            var contents = [];
+            var content = null;
+            var length = $boardList.length;
+
+            for (var i = 0; i < length; i++) {
+                var _content = this.getContent($boardList.eq(i));
+                if (!_content) {
+                    break;
+                }
+                contents.push(_content);
+            }
+            if (contents.length > 0) {
+                return this.scrapping(boardURL, page += 1, function (_error, _pages, _contents) {
+                    if (!_error) _pages.push(page - 1);
+
+                    callback(_error, _pages, contents.concat(_contents));
+                });
+            }
+            callback(null, [], contents);
+        } else {
+            callback('Forbidden: response status ' + response.statusCode);
+        }
+    }.bind(this));
+};
+
+Crawling.prototype.run = function () {
+    var that = this;
     var boardURL = this.getBoardURL();
-    this.scrapping(boardURL, state.startPage, function (error, pages, contents) {
-        if (error) return callback(error);
-        var needUpdate = contents.length > 0;
-        callback(null, needUpdate, {
-            board: state,
-            pages: pages,
-            contents: contents,
-            contentId: needUpdate ? contents[contents.length - 1].no : null,
-            update: needUpdate ? contents[contents.length - 1].regDate : null
+    return new Promise(function (resolve, reject) {
+        that.scrapping(boardURL, that.state.startPage, function (error, pages, contents) {
+            // if( error ) return callback( error );
+            if (error) reject(error);
+            resolve({
+                board: that.state,
+                pages: pages,
+                contents: contents,
+                updateData: contents.length > 0 ? [contents[0].no, // contentId
+                contents[0].regDate, // updated
+                board.logCode // logCode
+                ] : null
+            });
         });
     });
 };
-Crawling.prototype.runWithLogin = function (callback) {
+Crawling.prototype.runWithLogin = function () {
     var _this = this;
 
     var cookieJar = request.jar();
@@ -67,53 +108,14 @@ Crawling.prototype.runWithLogin = function (callback) {
         });
     }).then(function (cookie) {
         _this.cookieJar = cookie;
-        _this.run(callback);
+        console.log(_this.run());
+        return _this.run();
     }).catch(function (error) {
-        return callback(error);
+        return new Promise().reject(error);
     });
 };
-Crawling.prototype.scrapping = function (boardURL, page, callback) {
-    var options = {
-        url: boardURL + page,
-        jar: this.cookieJar,
-        headers: {
-            'User-Agent': UserAgent,
-            'Content-Type': ContentType
-        }
-    };
-    var req = request(options, function (error, response, body) {
-        if (error) callback(error);
-        if (response.statusCode === 200 || response.statusCode === 201) {
-            var $ = cheerio.load(body);
-            var $boardList = this.parser.getBoardList($);
-
-            var contents = [];
-            var content = null;
-            var length = $boardList.length;
-
-            for (var i = 0; i < length; i++) {
-                var _content = this.parser.getContent($boardList.eq(i));
-                if (!_content) {
-                    break;
-                }
-                contents.push(_content);
-            }
-            if (contents.length > 0) {
-                return this.scrapping(boardURL, page += 1, function (_error, _pages, _contents) {
-                    if (!_error) _pages.push(page - 1);
-
-                    callback(_error, _pages, contents.concat(_contents));
-                });
-            }
-            callback(null, [], contents);
-        } else {
-            callback('Forbidden: response status ' + response.statusCode);
-        }
-    }.bind(this));
-};
-
-var _default = Crawling;
-exports.default = _default;
+// export default Crawling
+module.exports = Crawling;
 ;
 
 var _temp = function () {
@@ -130,8 +132,6 @@ var _temp = function () {
     __REACT_HOT_LOADER__.register(ContentType, 'ContentType', 'server/utils/crawler.js');
 
     __REACT_HOT_LOADER__.register(Crawling, 'Crawling', 'server/utils/crawler.js');
-
-    __REACT_HOT_LOADER__.register(_default, 'default', 'server/utils/crawler.js');
 }();
 
 ;

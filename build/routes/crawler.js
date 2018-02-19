@@ -1,71 +1,74 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+// import express from 'express'
+// import mysql from 'mysql'
 
-var _express = require('express');
+// import DBConfig from './../config/database.js';
+// import { crawler as SQL } from './../config/sql.js'
+// import Crawler from './../utils/crawler.js'
 
-var _express2 = _interopRequireDefault(_express);
+var express = require('express');
+var mysql = require('mysql');
+var DBConfig = require('./../config/database.js');
+var SQL = require('./../config/sql.js');
+var Crawler = require('./../utils/crawler.js');
 
-var _mysql = require('mysql');
+var app = express();
 
-var _mysql2 = _interopRequireDefault(_mysql);
-
-var _database = require('./../config/database.js');
-
-var _database2 = _interopRequireDefault(_database);
-
-var _sql = require('./../config/sql.js');
-
-var _sql2 = _interopRequireDefault(_sql);
-
-var _crawler = require('./../utils/crawler.js');
-
-var _crawler2 = _interopRequireDefault(_crawler);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var conn = _mysql2.default.createConnection(_database2.default);
+var conn = mysql.createConnection(DBConfig);
 conn.connect();
 
-var Router = _express2.default.Router();
+var Router = express.Router();
 var MEM_CODE = "mem@adm#1";
 var COM_CODE = "com@ygo#2";
+var BOD_CODE = "bod#1!com@ygo#2";
 
-Router.get('/crawler', function (req, res) {
-    var CONDITION = [MEM_CODE, COM_CODE];
-    conn.query(_sql2.default.crawler, CONDITION, function (error, result) {
-        if (error) return console.error('[sql-error]', error);
-        if (result.length === 0) return console.log('[not-found]');
+Router.get('/crawler/:comCode/:bodCode', function (req, res) {
+    var CONDITION = [MEM_CODE, req.params.comCode, req.params.bodCode];
 
-        result = JSON.parse(JSON.stringify(result));
+    conn.query(SQL.crawler, CONDITION, function (selectError, selected) {
+        if (selectError) return res.status(500).json({ error: selectError });
+        if (selected.length === 0) return res.status(404).json({ error: "Not Found" });
 
-        var board = {};
-        for (var _index in result) {
-            board = result[_index];
-            if (board.withLogin) {
-                // 사용자에게 입력받도록 한다.
-                // 로그인 패턴에 관련된 Table도 만들자
-                board.user = { "mb_id": "dnjsakf", "mb_password": "wjddns1" };
-            }
+        board = JSON.parse(JSON.stringify(selected[0]));
 
-            var crawler = new _crawler2.default(board);
-            board.withLogin ? crawler.runWithLogin(updateHandler) : crawler.run(updateHandler);
+        if (board.withLogin) {
+            board.user = { "mb_id": "dnjsakf", "mb_password": "wjddns1" };
         }
+
+        var crawler = new Crawler(board);
+        var crawling = board.withLogin ? crawler.runWithLogin() : crawler.run();
+        crawling.then(function (result) {
+            console.log(result);
+            console.log('\n[' + result.board.bodTitle + ']', result.pages, result.contents.length, result.updateData);
+            if (result.updateData) {
+                conn.query(SQL.updateLog, result.updateData, function (updateError, updated) {
+                    if (updateError) return res.status(400).json({ error: updateError });
+                    res.status(200).json({
+                        board: board,
+                        contents: result.contents
+                    });
+                });
+            } else {
+                res.status(200).json({
+                    board: board,
+                    contents: result.contents
+                });
+            }
+        });
+        crawling.catch(function (crawlingError) {
+            res.status(400).json({ error: crawlingError });
+        });
     });
 });
 
-function updateHandler(error, needUpdate, complete) {
-    if (error) return console.error('[' + index + ' scrap error]', error);
-    console.log('\n[' + complete.board.bodTitle + ']', needUpdate, complete.pages, complete.contents.length, complete.contentId, complete.update);
-    for (var _index2 in complete.contents) {
-        console.log(complete.contents[_index2].no, complete.contents[_index2].title, complete.contents[_index2].regDate);
-    }
-}
+app.listen(3000, function (req, res) {
+    return console.log("[crawler server`]");
+});
+app.use('/api', Router);
 
-var _default = Router;
-exports.default = _default;
+// export default Router;
+
 ;
 
 var _temp = function () {
@@ -73,7 +76,7 @@ var _temp = function () {
         return;
     }
 
-    __REACT_HOT_LOADER__.register(updateHandler, 'updateHandler', 'server/routes/crawler.js');
+    __REACT_HOT_LOADER__.register(app, 'app', 'server/routes/crawler.js');
 
     __REACT_HOT_LOADER__.register(conn, 'conn', 'server/routes/crawler.js');
 
@@ -83,7 +86,7 @@ var _temp = function () {
 
     __REACT_HOT_LOADER__.register(COM_CODE, 'COM_CODE', 'server/routes/crawler.js');
 
-    __REACT_HOT_LOADER__.register(_default, 'default', 'server/routes/crawler.js');
+    __REACT_HOT_LOADER__.register(BOD_CODE, 'BOD_CODE', 'server/routes/crawler.js');
 }();
 
 ;

@@ -1,45 +1,35 @@
 import React from 'react'
 import './ContentList.css'
 
-import { Collection } from 'react-materialize'
-
-/**
- * @param type Array: ['photo', 'video', 'text']
- * @param index Number: '글번호?'
- * @param data JSON: { no, url, title, writer, regDate }
- */
-const ContentItem = ( {type, data} )=>{
+const ContentItem = ( {data} )=>{
     return (
-        <li className={`content-item ${type} ${data.no} collection-item avatar`}>
-            <a style={{display:'block'}} href="#">
+        <li className={`content-item ${data.no} collection-item avatar`}>
+            <a style={{display:'block'}} href={data.url}>
                 <img src="/images/ygosu_logo.gif" alt="" className="circle"/>
-                <span className="title" href={data.url}>{data.title}</span>
+                <span className="title">{data.title}</span>
                 <p>
                     <a className="writer">{data.writer}</a><br/>
                     <a className="regDate">{data.regDate}</a>
                 </p>
-                <a className="secondary-content">GO</a>
             </a>
+            <a className="secondary-content">GO</a>
         </li>
     )
 }
 
-/**
- * @param updated Array: [ { url, title, writer, regDate }, ... ]
- */
-const Content = ({ type, updated })=>{
-    const items = updated.map((data, index)=>{
-        return <ContentItem key={index} type={type} data={data} />
+const ContentList = ({ contents })=>{
+    const items = contents.map((data, index)=>{
+        return <ContentItem key={index} data={data} />
     });
     return (
-        <ul className={`content-list ${type} collection`}>
+        <ul className={`content-list collection`}>
             { items.length > 0 ? items : null }
         </ul>
     )
 }
 
-Content.defaultProps = {
-    updated: []
+ContentList.defaultProps = {
+    contents: []
 }
 
-export default Content
+export default ContentList

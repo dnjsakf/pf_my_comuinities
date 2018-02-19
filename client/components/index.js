@@ -1,1 +1,5 @@
-export { default as ContentList } from './ContentList/ContentList.js'
+import ContentList from './ContentList/ContentList.js'
+
+export {
+    ContentList
+}

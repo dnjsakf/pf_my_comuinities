@@ -1,10 +1,8 @@
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-var _default = {
-    '와이고수': {
+// export default {
+module.exports = {
+    'ygosu': {
         getBoardList: function getBoardList($) {
             return $('table.bd_list tbody > tr:not(.notice, .notice + tr)');
         },
@@ -14,7 +12,7 @@ var _default = {
 
             var cnt = {};
             cnt.no = $content.children('.no').text();
-            if (cnt.no >= this.state.content_id) {
+            if (cnt.no > this.state.content_id) {
                 cnt.title = $content.children('.tit').text().replace(/(\t\d?|\n\d?)/g, '');;
                 cnt.writer = $content.children('.name').text().replace(/(\t\d?|\n\d?)/g, '');;
                 cnt.regDate = regDate;
@@ -24,7 +22,7 @@ var _default = {
             return false;
         }
     },
-    '개집넷': {
+    'gezip': {
         getBoardList: function getBoardList($) {
             return $('#list-body .list-item:not(.bg-light)');
         },
@@ -34,7 +32,7 @@ var _default = {
 
             var cnt = {};
             cnt.no = $content.children('.wr-num').text();
-            if (cnt.no >= this.state.content_id) {
+            if (cnt.no > this.state.content_id) {
                 cnt.title = $content.find('.wr-subject > a.item-subject').text().replace(/(\t\d?|\n\d?)/g, '');
                 cnt.writer = $content.find('.wr-name').text().replace(/(\t\d?|\n\d?)/g, '');
                 cnt.regDate = regDate;
@@ -44,7 +42,7 @@ var _default = {
             return false;
         }
     },
-    '웃긴대학': {
+    'humoruniv': {
         getBoardList: function getBoardList($) {
             return $('#cnts_list_new > div:first-child > table:not(.list_hd2) > tbody > tr[id]');
         },
@@ -54,7 +52,7 @@ var _default = {
 
             var cnt = {};
             cnt.no = $content.attr('id').replace('li_chk_pds-', '');
-            if (cnt.no >= this.state.content_id) {
+            if (cnt.no > this.state.content_id) {
                 cnt.title = $content.children('.li_sbj').text();
                 cnt.writer = $content.find('.li_icn .hu_nick_txt').text();
                 cnt.regDate = regDate;
@@ -65,15 +63,12 @@ var _default = {
         }
     }
 };
-exports.default = _default;
 ;
 
 var _temp = function () {
     if (typeof __REACT_HOT_LOADER__ === 'undefined') {
         return;
     }
-
-    __REACT_HOT_LOADER__.register(_default, 'default', 'server/utils/parsing.js');
 }();
 
 ;

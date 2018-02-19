@@ -7,15 +7,14 @@ import dbConfig from './config/database.js'
 import sessionConfig from './config/session.js'
 import webpackDev from './config/webpack.dev.js'
 
-import apiCrawler from './routes/crawler.js'
-
-const app = express();
+import api from './routes'
 
 // Database
 const conn = mysql.createConnection(dbConfig);
 conn.connect();
 
 // App Configuration
+const app = express();
 app.set('port', {"local":8080, 'dev':4000});
 
 app.use(bodyParser.json());
@@ -37,7 +36,7 @@ app.use(sessionConfig);
 
 // Set Route
 app.use('/', express.static(path.join(__dirname, './../public')));
-app.use('/api', [ apiCrawler ] );
+app.use('/api', api );
 
 app.get('*', (req, res, next)=>{
   if( req.path.split('/')[1] === 'static') return next();
